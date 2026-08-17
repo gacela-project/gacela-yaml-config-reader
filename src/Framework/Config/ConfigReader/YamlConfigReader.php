@@ -9,6 +9,10 @@ use Gacela\Framework\Event\ConfigReader\ReadYamlConfigEvent;
 use Gacela\Framework\Event\Dispatcher\EventDispatchingCapabilities;
 use Symfony\Component\Yaml\Yaml;
 
+use function is_array;
+
+use const PATHINFO_EXTENSION;
+
 final class YamlConfigReader implements ConfigReaderInterface
 {
     use EventDispatchingCapabilities;
@@ -22,7 +26,9 @@ final class YamlConfigReader implements ConfigReaderInterface
             return [];
         }
 
-        self::dispatchEvent(new ReadYamlConfigEvent($absolutePath));
+        if (self::shouldDispatch(ReadYamlConfigEvent::class)) {
+            self::dispatchEvent(new ReadYamlConfigEvent($absolutePath));
+        }
 
         /** @var null|array<string,mixed> $content */
         $content = Yaml::parseFile($absolutePath);
@@ -34,7 +40,7 @@ final class YamlConfigReader implements ConfigReaderInterface
     {
         $extension = pathinfo($absolutePath, PATHINFO_EXTENSION);
 
-        return ('yaml' === $extension || 'yml' === $extension)
+        return ($extension === 'yaml' || $extension === 'yml')
             && file_exists($absolutePath);
     }
 }

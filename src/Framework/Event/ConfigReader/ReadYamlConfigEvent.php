@@ -6,15 +6,13 @@ namespace Gacela\Framework\Event\ConfigReader;
 
 use Gacela\Framework\Event\GacelaEventInterface;
 
-use function get_class;
+use function sprintf;
 
 final class ReadYamlConfigEvent implements GacelaEventInterface
 {
-    private string $absolutePath;
-
-    public function __construct(string $absolutePath)
-    {
-        $this->absolutePath = $absolutePath;
+    public function __construct(
+        private readonly string $absolutePath,
+    ) {
     }
 
     public function absolutePath(): string
@@ -26,8 +24,8 @@ final class ReadYamlConfigEvent implements GacelaEventInterface
     {
         return sprintf(
             '%s - %s',
-            get_class($this),
-            $this->absolutePath
+            self::class,
+            $this->absolutePath,
         );
     }
 }
